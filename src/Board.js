@@ -79,11 +79,35 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      // this.get(rowIndex) to grab desired row
+      var thisRow = this.get(rowIndex);
+
+      // call reduce on row to sum values
+      var sumOfRow = _.reduce(thisRow, function (acc, value) {
+        return acc += value;
+      }, 0);
+
+      // if sum > 1, return true, else return false
+      if (sumOfRow > 1) {
+        return true;
+      } else {
+        return false;
+      }
+
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      var hasCoflict = false;
+      // rows = this.rows
+      var rows = this.rows();
+      // for row in rows, call hasRowConflictAt
+      for (var i = 0; i < rows.length; i++) {
+        hasConflict = this.hasRowConflictAt(i);
+        if (hasConflict) {
+          return hasConflict;
+        }
+      }
       return false; // fixme
     },
 
@@ -94,11 +118,33 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      // get rows
+      var rows = this.rows();
+
+      // call reduce on all rows at colIndex
+      var sumOfCol = _.reduce(rows, function (acc, value) {
+        return acc += value[colIndex];
+      }, 0);
+
+      // if sum > 1 return true, else return false
+      if (sumOfCol > 1 ) {
+        return true;
+      } else {
+        return false;
+      }
+
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      var hasConflict = false;
+      var rows = this.rows();
+      for (var i = 0; i < rows.length; i++) {
+        hasConflict = this.hasColConflictAt(i);
+        if (hasConflict) {
+          return hasConflict;
+        }
+      }
       return false; // fixme
     },
 
@@ -109,12 +155,58 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var rows = this.rows();
+      // var rowIndex = 0;
+      // var colIndex = majorDiagonalColumnIndexAtFirstRow;
+
+      // special case: majorDiagonalColumnIndexAtFirstRow = 0
+      // starting at (0, 0) sum all values incrementing (r, c) by 1 until either equals n - 1
+        // then increment r in (r, 0) and get new sum of values until r = n - 2
+        // if sum > 1 return true
+        // else return false
+      if (majorDiagonalColumnIndexAtFirstRow === this.attributes.n - 1) {
+        return false;
+      } else if (majorDiagonalColumnIndexAtFirstRow === 0) {
+        for (var i = 0; i < this.attributes.n - 1; i++) {
+          var colIndex = majorDiagonalColumnIndexAtFirstRow;
+          var sumOfDiagonal = _.reduce(rows.slice(i), function(acc, value) {
+            acc += value[colIndex];
+            colIndex++;
+            return acc;
+          }, 0);
+          if (sumOfDiagonal > 1) {
+            return true;
+          }
+        }
+      } else if (majorDiagonalColumnIndexAtFirstRow > 0 && majorDiagonalColumnIndexAtFirstRow < this.attributes.n - 1) {
+      // other case: majorDiagonalColumnIndexAtFirstRow = some other number
+      // start at (0, majorDiagonalColumnIndexAtFirstRow) sum all values incrementing (r, c) by 1 until either equals n - 1
+        var colIndex = majorDiagonalColumnIndexAtFirstRow;
+        var sumOfDiagonal = _.reduce(rows, function(acc, value) {
+          acc += value[colIndex];
+          colIndex++;
+          return acc;
+        }, 0);
+        // if sum > 1 return true
+        if (sumOfDiagonal > 1) {
+          return true;
+        }
+
+      }
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var hasConflict = false;
+      var rows = this.rows();
+      for (var i = 0; i < rows.length; i++) {
+        hasConflict = this.hasMajorDiagonalConflictAt(i);
+        if (hasConflict) {
+          return hasConflict;
+        }
+      }
+      return false;
     },
 
 
