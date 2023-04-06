@@ -161,9 +161,9 @@
 
       // special case: majorDiagonalColumnIndexAtFirstRow = 0
       // starting at (0, 0) sum all values incrementing (r, c) by 1 until either equals n - 1
-        // then increment r in (r, 0) and get new sum of values until r = n - 2
-        // if sum > 1 return true
-        // else return false
+      // then increment r in (r, 0) and get new sum of values until r = n - 2
+      // if sum > 1 return true
+      // else return false
       if (majorDiagonalColumnIndexAtFirstRow === this.attributes.n - 1) {
         return false;
       } else if (majorDiagonalColumnIndexAtFirstRow === 0) {
@@ -216,11 +216,55 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var rows = this.rows();
+      // minorDiagonalColumnIndexAtFirstRow === 0
+      if (minorDiagonalColumnIndexAtFirstRow === 0) {
+        // return false
+        return false;
+      } else if (minorDiagonalColumnIndexAtFirstRow === this.attributes.n - 1) {
+      // special case: minorDiagonalColumnIndexAtFirstRow = n - 1
+      // start at (0, n - 1) sum all values while incrementing rows and decrementing columns
+        for (var i = 0; i < this.attributes.n - 1; i++) {
+          // then increment r in (r, n - 1) until r = n - 2
+          var colIndex = minorDiagonalColumnIndexAtFirstRow;
+          var sumOfDiagonal = _.reduce(rows.slice(i), function (acc, value) {
+            acc += value[colIndex];
+            colIndex--;
+            return acc;
+          }, 0);
+          // if sum > 1 return true
+          if (sumOfDiagonal > 1) {
+            return true;
+          }
+        }
+
+      } else if (minorDiagonalColumnIndexAtFirstRow < this.attributes.n - 1 && minorDiagonalColumnIndexAtFirstRow > 0) {
+      // base case: minorDiagonalColumnIndexAtFirstRow < n - 1 && minorDiagonalColumnIndexAtFirstRow > 0
+        var colIndex = minorDiagonalColumnIndexAtFirstRow;
+        // start at (0, minorDiagonalColumnIndexAtFirstRow)
+        var sumOfDiagonal = _.reduce(rows, function(acc, value) {
+          acc += value[colIndex];
+          colIndex--;
+          return acc;
+        }, 0);
+        if (sumOfDiagonal > 1) {
+          return true;
+        }
+      }
+
+      return false;
     },
 
-    // test if any minor diagonals on this board contain conflicts
+    // test if any minor diagonals on this board contain conflicts sum all values while incrementing rows and decrementing columns
     hasAnyMinorDiagonalConflicts: function() {
+      var hasConflict = false;
+      var rows = this.rows();
+      for (var i = 0; i < rows.length; i++) {
+        hasConflict = this.hasMinorDiagonalConflictAt(i);
+        if (hasConflict) {
+          return hasConflict;
+        }
+      }
       return false; // fixme
     }
 
