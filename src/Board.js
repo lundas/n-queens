@@ -182,7 +182,7 @@
       // other case: majorDiagonalColumnIndexAtFirstRow = some other number
       // start at (0, majorDiagonalColumnIndexAtFirstRow) sum all values incrementing (r, c) by 1 until either equals n - 1
         var colIndex = majorDiagonalColumnIndexAtFirstRow;
-        var sumOfDiagonal = _.reduce(rows, function(acc, value) {
+        var sumOfDiagonal = _.reduce(rows.slice(0, (this.attributes.n - majorDiagonalColumnIndexAtFirstRow)), function(acc, value) {
           acc += value[colIndex];
           colIndex++;
           return acc;
@@ -242,7 +242,7 @@
       // base case: minorDiagonalColumnIndexAtFirstRow < n - 1 && minorDiagonalColumnIndexAtFirstRow > 0
         var colIndex = minorDiagonalColumnIndexAtFirstRow;
         // start at (0, minorDiagonalColumnIndexAtFirstRow)
-        var sumOfDiagonal = _.reduce(rows, function(acc, value) {
+        var sumOfDiagonal = _.reduce(rows.slice(0, minorDiagonalColumnIndexAtFirstRow + 1), function(acc, value) {
           acc += value[colIndex];
           colIndex--;
           return acc;
